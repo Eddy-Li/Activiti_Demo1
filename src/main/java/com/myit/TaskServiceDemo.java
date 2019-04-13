@@ -3,6 +3,7 @@ package com.myit;
 import org.activiti.engine.*;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.junit.After;
 import org.junit.Before;
@@ -62,8 +63,8 @@ public class TaskServiceDemo {
 
         Task task = taskService.newTask(taskId);
 
-        taskService.addCandidateUser(taskId, userId);//ACT_RU_IDENTITYLINK
-        taskService.addCandidateGroup(taskId, groupId);//ACT_RU_IDENTITYLINK
+        taskService.addCandidateUser(taskId, userId);//ACT_RU_IDENTITYLINK,TYPE_字段类型为：IdentityLinkType.CANDIDATE
+        taskService.addCandidateGroup(taskId, groupId);//ACT_RU_IDENTITYLINK,TYPE_字段类型为：IdentityLinkType.CANDIDATE
 
 
         List<Task> list = taskService.createTaskQuery().taskCandidateUser(userId).list();
@@ -83,5 +84,23 @@ public class TaskServiceDemo {
             System.out.println(identityLink.getProcessDefinitionId());
             System.out.println(identityLink.getProcessInstanceId());
         }
+
+        System.out.println(IdentityLinkType.OWNER);
+        System.out.println(IdentityLinkType.CANDIDATE);
+        System.out.println(IdentityLinkType.ASSIGNEE);
+        System.out.println(IdentityLinkType.PARTICIPANT);
+        System.out.println(IdentityLinkType.STARTER);
+    }
+
+    //3.设置任务持有人;根据任务持有人查询任务
+    @Test
+    public void test3(){
+        String taskId = null;
+        String userId = null;
+        Task task = taskService.newTask(taskId);
+
+        taskService.setOwner(taskId,userId);//ACT_RU_TASK表的OWNER_字段
+
+        List<Task> list = taskService.createTaskQuery().taskOwner(userId).list();
     }
 }
