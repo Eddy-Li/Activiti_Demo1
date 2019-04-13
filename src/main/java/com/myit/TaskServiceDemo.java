@@ -1,0 +1,87 @@
+package com.myit;
+
+import org.activiti.engine.*;
+import org.activiti.engine.repository.DeploymentBuilder;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.Task;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Collection;
+import java.util.List;
+
+public class TaskServiceDemo {
+    //流程引擎对象
+    private ProcessEngine engine;
+    //流程存储服务组件
+    private RepositoryService repositoryService;
+    //流程运行时服务组件
+    private RuntimeService runtimeService;
+    //流程任务组件
+    private TaskService taskService;
+
+    //1.创建ProcessEngine对象，其他Service对象
+    @Before
+    public void before() {
+        //ProcessEngines.getDefaultProcessEngine()=>会自动加载resources目录下的名为activiti.cfg.xml的配置文件
+        engine = ProcessEngines.getDefaultProcessEngine();
+        repositoryService = engine.getRepositoryService();
+        runtimeService = engine.getRuntimeService();
+        taskService = engine.getTaskService();
+    }
+
+
+    @After
+    public void after() {
+        engine.close();
+    }
+
+    //1.删除任务
+    @Test
+    public void test1() {
+        String taskId = null;
+        Task task = taskService.newTask(taskId);
+        //删除task，不包括历史数据（ACT_HI_TASKINST）和子任务
+        taskService.deleteTask(taskId);
+        //删除task，不包括历史数据（ACT_HI_TASKINST）和子任务
+        taskService.deleteTask(taskId, false);
+        //删除task，包括历史数据（ACT_HI_TASKINST）和子任务
+        taskService.deleteTask(taskId, true);
+
+        Collection<String> taskIds = null;
+        taskService.deleteTasks(taskIds);
+    }
+
+    //2.设置任务候选用户、候选组；根据候选用户、候选组查询任务
+    @Test
+    public void test2() {
+        String taskId = null;
+        String userId = null;
+        String groupId = null;
+
+        Task task = taskService.newTask(taskId);
+
+        taskService.addCandidateUser(taskId, userId);//ACT_RU_IDENTITYLINK
+        taskService.addCandidateGroup(taskId, groupId);//ACT_RU_IDENTITYLINK
+
+
+        List<Task> list = taskService.createTaskQuery().taskCandidateUser(userId).list();
+
+        List<Task> list1 = taskService.createTaskQuery().taskCandidateGroup(groupId).list();
+
+        List<String> groupIds = null;
+        List<Task> list2 = taskService.createTaskQuery().taskCandidateGroupIn(groupIds).list();
+
+        //查询ACT_RU_IDENTITYLINK表，taskId
+        List<IdentityLink> identityLinksForTask = taskService.getIdentityLinksForTask(taskId);
+        for (IdentityLink identityLink : identityLinksForTask) {
+            System.out.println(identityLink.getUserId());
+            System.out.println(identityLink.getGroupId());
+            System.out.println(identityLink.getType());
+            System.out.println(identityLink.getTaskId());
+            System.out.println(identityLink.getProcessDefinitionId());
+            System.out.println(identityLink.getProcessInstanceId());
+        }
+    }
+}
