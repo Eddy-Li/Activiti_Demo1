@@ -123,4 +123,23 @@ public class TaskServiceDemo {
 
         List<Task> list = taskService.createTaskQuery().taskAssignee(userId).list();
     }
+
+    //5.删除
+    @Test
+    public void test5(){
+        String taskId = null;
+        String userId = null;
+        String groupId = null;
+
+        taskService.deleteCandidateUser(taskId,userId);
+        taskService.deleteUserIdentityLink(taskId,userId,IdentityLinkType.CANDIDATE);
+
+        taskService.deleteCandidateGroup(taskId,groupId);
+        taskService.deleteGroupIdentityLink(taskId,groupId,IdentityLinkType.CANDIDATE);
+
+
+        taskService.deleteUserIdentityLink(taskId,userId,IdentityLinkType.OWNER);
+        taskService.deleteUserIdentityLink(taskId,userId,IdentityLinkType.ASSIGNEE);
+
+    }
 }
