@@ -12,6 +12,9 @@ import org.junit.Test;
 import java.util.Collection;
 import java.util.List;
 
+
+//1.任务有候选人、持有人、代理人、候选组
+//2.持有人、代理人都只能各有一个；而候选人、候选组可以有多个
 public class TaskServiceDemo {
     //流程引擎对象
     private ProcessEngine engine;
@@ -64,8 +67,10 @@ public class TaskServiceDemo {
         Task task = taskService.newTask(taskId);
 
         taskService.addCandidateUser(taskId, userId);//ACT_RU_IDENTITYLINK,TYPE_字段类型为：IdentityLinkType.CANDIDATE
-        taskService.addCandidateGroup(taskId, groupId);//ACT_RU_IDENTITYLINK,TYPE_字段类型为：IdentityLinkType.CANDIDATE
+        //等同于=》taskService.addUserIdentityLink(taskId,userId,IdentityLinkType.CANDIDATE);
 
+        taskService.addCandidateGroup(taskId, groupId);//ACT_RU_IDENTITYLINK,TYPE_字段类型为：IdentityLinkType.CANDIDATE
+        //等同于=》taskService.addGroupIdentityLink(taskId,groupId,IdentityLinkType.CANDIDATE);
 
         List<Task> list = taskService.createTaskQuery().taskCandidateUser(userId).list();
 
@@ -101,7 +106,21 @@ public class TaskServiceDemo {
         Task task = taskService.newTask(taskId);
 
         taskService.setOwner(taskId,userId);//ACT_RU_TASK表的OWNER_字段
+        //等同于=》taskService.addUserIdentityLink(taskId,userId,IdentityLinkType.OWNER);
 
         List<Task> list = taskService.createTaskQuery().taskOwner(userId).list();
+    }
+
+    //4.设置任务代理人;根据任务持有人查询任务
+    @Test
+    public void test4(){
+        String taskId = null;
+        String userId = null;
+        Task task = taskService.newTask(taskId);
+
+        taskService.setAssignee(taskId,userId);//ACT_RU_TASK表的ASSIGNEE_字段
+        //等同于=》taskService.addUserIdentityLink(taskId,userId,IdentityLinkType.ASSIGNEE);
+
+        List<Task> list = taskService.createTaskQuery().taskAssignee(userId).list();
     }
 }
