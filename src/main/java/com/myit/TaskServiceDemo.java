@@ -142,4 +142,34 @@ public class TaskServiceDemo {
         taskService.deleteUserIdentityLink(taskId,userId,IdentityLinkType.ASSIGNEE);
 
     }
+
+    //6.设置任务参数
+    @Test
+    public void test6(){
+        String taskId = null;
+        //任务全局参数
+        //设置参数，参数值可以是任何类型,日期类型时是java.util.Date
+        taskService.setVariable(taskId,"varName","varValue");
+        //获取参数
+        String varName = taskService.getVariable(taskId, "varName", String.class);
+
+        //任务本地参数，只在当前任务有效，任务完成后，就取不到参数了
+        taskService.setVariableLocal(taskId,"varName1","varValue1");
+        String varName1 = taskService.getVariableLocal(taskId, "varName1", String.class);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
