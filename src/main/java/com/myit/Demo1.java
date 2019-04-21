@@ -68,6 +68,7 @@ public class Demo1 {
         taskQuery = taskService.createTaskQuery();
         task = taskQuery.processInstanceId(myProcess.getId()).singleResult();
         System.out.println(task.getName());
+
     }
 
 //    //4.完成当前任务
