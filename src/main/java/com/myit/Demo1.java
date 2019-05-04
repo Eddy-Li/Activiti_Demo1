@@ -42,7 +42,7 @@ public class Demo1 {
         DeploymentBuilder deployment = repositoryService.createDeployment();
         //添加流程定义文件，可以一次部署多个流程定义文件，流程定义文件为".bpmn"格式文件
         //a.会将此".bpmn"格式文件对应的xml、png文件保存在ACT_GE_BYTEARRAY表中
-        deployment.addClasspathResource("demo1.bpmn");
+        deployment.addClasspathResource("demo1.xml");
         //过滤重复部署
         deployment.enableDuplicateFiltering();
         deployment.deploy();
